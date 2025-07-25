@@ -10,14 +10,14 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements inline (you can also use requirements.txt)
-COPY ./app ./app
-COPY ./app/embedder.py ./embedder.py
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 # Embed mock data at build time
 # RUN python embedder.py
-
+# Copy requirements inline (you can also use requirements.txt)
+COPY ./app ./app
+COPY ./app/embedder.py ./embedder.py
 # Expose port
 EXPOSE 8000
 
