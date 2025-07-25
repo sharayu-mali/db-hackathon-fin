@@ -15,8 +15,9 @@ app.add_middleware(
 @app.post("/chat")
 async def chat(request: Request):
     body = await request.json()
-    query = body.get("query")
-    scenario = body.get("business")
-    profile = body.get("profile", {"industry": "general", "stage": "early"})
+    query = body['contents'][0]['parts'][0]['query']
+    scenario = body['contents'][0]['parts'][0]['business']
+    profile = body['contents'][0]['parts'][0]['profile']
+    print("Received query:", body['contents'][0]['parts'][0]['business'],query,profile)
     response = generate_response(scenario,query, profile)
     return {"answer": response}

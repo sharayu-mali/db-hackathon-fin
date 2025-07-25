@@ -13,12 +13,10 @@ RUN apt-get update && apt-get install -y \
 # Copy requirements inline (you can also use requirements.txt)
 COPY ./app ./app
 COPY ./app/embedder.py ./embedder.py
-
-# Install Python dependencies
-RUN pip install --no-cache-dir fastapi uvicorn chromadb openai instructor pydantic unstructured duckdb
-
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 # Embed mock data at build time
-RUN python embedder.py
+# RUN python embedder.py
 
 # Expose port
 EXPOSE 8000
