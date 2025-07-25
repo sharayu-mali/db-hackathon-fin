@@ -1,13 +1,9 @@
-from chromadb import Client
-from chromadb.config import Settings
-from vertexai.language_models import ChatModel
-# from google.colab import auth
-from vertexai import init
 
-init(project="flowing-design-466913-e5", location="us-central1")
+# from google.colab import auth
+# init(project="flowing-design-466913-e5", location="us-central1")
 from google import genai
 from google.genai import types
-
+import logging
 from embedder import get_context
 llm = genai.Client(
 vertexai=True, project="flowing-design-466913-e5", location="global",
@@ -16,9 +12,6 @@ vertexai=True, project="flowing-design-466913-e5", location="global",
 model = "gemini-2.5-flash-lite"
 google_api_key = "AIzaSyBh-emCSHKlWdhyzbfoS12MkQa0ShjF8_Y"
 
-# Initialize Chroma
-client = Client(Settings(persist_directory="chroma_db"))
-collection = client.get_or_create_collection(name="biz_docs")
 
 # Init Gemini model
 # chat_model = ChatModel.from_pretrained("chat-bison@001")  # or "gemini-1.5-pro-preview"
@@ -26,12 +19,8 @@ collection = client.get_or_create_collection(name="biz_docs")
 client = genai.Client(api_key=google_api_key)
 
 
-def retrieve_context(query):
-    results = collection.query(query_texts=[query], n_results=3)
-    return "\n".join(results['documents'][0]) if results['documents'] else ""
-
 def generate_response(business,query, profile):
-    print("Business",business)
+    logging.info("Business",business)
     context = get_context(business)
 
     prompt = f"""
@@ -58,5 +47,5 @@ Provide a short, actionable recommendation in simple terms.
     response = client.models.generate_content(
     model="gemini-2.5-flash", contents=prompt 
     )
-    print(response.text, end="")
+    logging.info(response.text, end="")
     return {"text":response.text.strip()}
